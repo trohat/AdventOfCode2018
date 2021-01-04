@@ -87,9 +87,57 @@ const task1 = guards => {
     return [ sleepiest * minute, sleepiest, minute ];
 };
 
-const task2 = data => {
+const task2 = guards => {
+    const dot = ".";
+    let sixtyDots = "";
+    for (let i = 0; i < 60; i++) {
+        sixtyDots += dot;
+    }
+
+    let records = new Map();
+    for (const [ id, guard ] of guards) {
+        let schedule = [];
+        records.set(id, schedule);
+        let day = sixtyDots;
+        let sleepyTime;
+        for (const record of guard) {
+            switch (record.action) {
+                case "next shift":
+                    schedule.push(day);
+                    day = sixtyDots;
+                    break;
+                case "falls asleep":
+                    sleepyTime = record.mins;
+                    break;
+                case "wakes up":
+                    for (let i = +sleepyTime; i < record.mins; i++) {
+                        day = day.setCharAt(i, "#");
+                    }
+                    break;
+                }
+        }
+        schedule.push(day);
+    }
+
+    let maxCount = 0;
+    let minute;
+    let maxId;
     
-}
+    for (const [ id, guard ] of records) {
+        for (let j = 0; j < sixtyDots.length; j++) {
+            let count = 0;
+            for (let i = 0; i < guard.length; i++) {
+                if (guard[i][j] === "#") count++;
+            }
+            if (count > maxCount) {
+                maxCount = count;
+                minute = j;
+                maxId = id;
+            }
+        }
+    }
+    return [ maxId * minute, maxId, minute, maxCount ];
+};
 
 let testdata = `[1518-11-01 00:00] Guard #10 begins shift
 [1518-11-01 00:05] falls asleep
@@ -123,6 +171,6 @@ console.log("Task 1: " + task1(inputdata));
 
 console.log("");
 
-//doEqualTest(task2(testdata), 336);
+doEqualTest(task2(testdata), 4455);
 
-//console.log("Task 2: " + task2(inputdata));
+console.log("Task 2: " + task2(inputdata));
