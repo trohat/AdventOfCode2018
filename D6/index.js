@@ -2,6 +2,9 @@ console.log("funguju");
 
 let chr = String.fromCharCode;
 
+// not needed here, just added for completeness
+let ord = str => str.charCodeAt(0);
+
 Array.prototype.countChar = function (char) {
     return this.reduce((accumulator, str) => accumulator + str.split(char).length-1, 0);
 }
