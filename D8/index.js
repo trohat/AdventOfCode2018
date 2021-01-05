@@ -6,7 +6,10 @@ Array.prototype.sum = function () {
 
 const splitLines = (data) => data.split(" ").map(d => +d);
 
-const prepare = data => {
+const prepare = data => data;
+
+const task1 = pdata => {
+    let data = [ ...pdata ];
     const readNode = () => {
         let childNodes = data.shift();
         let metadataEntries = data.shift();
@@ -21,20 +24,36 @@ const prepare = data => {
     let metadata = [];
     readNode();
 
-    return metadata;
+    return metadata.sum();
 };
 
-const task1 = data => data.sum();
-
 const task2 = data => {
-    
-}
+    const readNode = () => {
+        let childNodes = data.shift();
+        let metadataEntries = data.shift();
+        let childValues = [];
+        let metadata = [];
+        for (let i = 0; i < childNodes; i++) {
+            childValues.push(readNode());
+        }
+        for (let i = 0; i < metadataEntries; i++) {
+            metadata.push(data.shift());
+        }
+
+        if (childNodes === 0) return metadata.sum();
+        let value = 0;
+        for (const d of metadata) {
+            if ((d-1) in childValues) value += childValues[d-1];
+        }
+        return value;
+    }
+
+    return readNode();
+};
 
 let testdata = `2 3 0 3 10 11 12 1 1 0 1 99 2 1 1 2`;
 
 inputdata = prepare(splitLines(inputdata));
-
-console.log(inputdata);
 
 testdata = prepare(splitLines(testdata));
 
@@ -46,6 +65,6 @@ console.log("Task 1: " + task1(inputdata));
 
 console.log("");
 
-//doEqualTest(task2(testdata), 336);
+doEqualTest(task2(testdata), 66);
 
-//console.log("Task 2: " + task2(inputdata));
+console.log("Task 2: " + task2(inputdata));
