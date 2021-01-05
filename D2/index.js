@@ -21,6 +21,7 @@ const task1 = boxes => {
         let three = false;
         let set = new Set(box); // set is not necessary, but is it faster or slower with it?
         for (const letter of set) {
+        //for (const letter of box) {
             const n = box.count(letter);
             iterations++;
             if (n === 2) two = true;
