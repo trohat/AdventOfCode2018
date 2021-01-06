@@ -19,16 +19,15 @@ const prepare = data => {
 
 const task1 = ({ state, data: rules, zeroIndex } ) => {
     console.log(rules);
+    let lastSum = 0;
     state += "..";
-    const steps = 20;
+    const steps = 200;
     for (let _ = 0; _ < steps; _++) {
-        console.log(_)
-        console.log(state);
         let newState = "";
         state = ".." + state + "..";
         for (let i = 0; i < state.length - 4; i++) {
             let around = state.slice(i, i + 5);
-            let ruleUsed = false;
+            let ruleUsed = false; // just for test case, which doesn't have all rules
             for (const rule of rules) {
                 if (around === rule.pattern) {
                     newState += rule.output;
@@ -40,10 +39,16 @@ const task1 = ({ state, data: rules, zeroIndex } ) => {
         }
         if (newState.lastIndexOf("#") > newState.length - 4) newState += ".....";
         state = newState;
+        let sum = 0;
+        for (let i = 0; i < state.length; i++) { 
+            if (state[i] === "#")  sum += i - zeroIndex;
+        }
+        console.log("Difference: " + (sum - lastSum));
+        lastSum = sum;
+        console.log("Sum: " + sum);
     }
     let sum = 0;
-    console.log(steps);
-    console.log(state);
+    console.log("Steps: " + steps);
     for (let i = 0; i < state.length; i++) { 
         if (state[i] === "#")  sum += i - zeroIndex;
     }
@@ -51,7 +56,8 @@ const task1 = ({ state, data: rules, zeroIndex } ) => {
 };
 
 const task2 = data => {
-    
+    // the answer is (50000000000-200) * 81 + 14775
+    // try to figure out why... :)
 }
 
 let testdata = `initial state: #..#.#..##......###...###
@@ -82,9 +88,3 @@ console.log("");
 doEqualTest(task1(testdata), 325);
 
 console.log("Task 1: " + task1(inputdata));
-
-console.log("");
-
-//doEqualTest(task2(testdata), 336);
-
-//console.log("Task 2: " + task2(inputdata));
