@@ -26,14 +26,14 @@ const task1 = serialNumber => {
     for (let i = 0; i < 300; i++) {
         for (let j = 0; j < 300; j++) {
             let maxSize = 300 - Math.max(i,j);
-            for (let size = 0; size < maxSize; size++) {
-                let totalPower = 0;
-                for (let iInside = i; iInside < i + size; iInside++) {
-                    for (let jInside = j; jInside < j + size; jInside++) {
-                        totalPower += grid[iInside][jInside];
-                    }
+            let totalPower = 0;
+            for (let size = 1; size < maxSize; size++) {
+                for (let x = 0; x < size; x++) {
+                    totalPower += grid[i + size - 1][x + j];
                 }
-
+                for (let y = 0; y < size -1; y++) {
+                    totalPower += grid[y + i][j + size - 1];
+                }
                 if (totalPower > maxPower) {
                     maxPower = totalPower;
                     maxI = i;
@@ -42,20 +42,9 @@ const task1 = serialNumber => {
                 }
             }
         }
-        console.log("finished:", i);
     }
     return (maxJ+1) + "," + (maxI+1) + "," + bestSize;
 };
-
-const task2 = data => {
-    
-}
-
-let testdata = ``;
-
-
-console.log(inputdata);
-
 
 console.log("");
 
