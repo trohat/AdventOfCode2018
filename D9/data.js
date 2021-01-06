@@ -1,1 +1,1 @@
-let inputdata = `419 players; last marble is worth 72164 points`;
+let inputdata = `419 players; last marble is worth 7216400 points`;
