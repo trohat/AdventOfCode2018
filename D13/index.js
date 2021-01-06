@@ -4,6 +4,14 @@ let chr = String.fromCharCode;
 
 let ord = str => str.charCodeAt(0);
 
+const compareArrays = (arr1, arr2) => {
+    let same = true;
+    arr1.forEach((field, index) => {
+        if (field !== arr2[index]) same = false;
+    })
+    return same;
+}
+
 const turns = new Map([["left", "straight"], ["straight", "right"], ["right", "left"]]);
 
 const dirs = new Map([["<", "left"], [">", "right"], ["^", "up"], ["v", "down"]]);
@@ -22,7 +30,7 @@ const splitLines = (data) => data.split(String.fromCharCode(10));
 
 const prepare = data => {
     const carts = [];
-    data.shift(); // remove first empty line
+    data.shift(); // first remove empty line
 
     data.forEach((line, lineIndex) => {
         line.split("").forEach((char, charIndex) => {
@@ -41,19 +49,19 @@ const prepare = data => {
     return [carts, data];
 };
 
-const task1 = ([carts, tracks]) => {
+const task = ([carts, tracks]) => {
     console.log("carts: " + carts.length);
     while (true) {
+        let cartsToRemove = [];
         for (const cart of carts) {
             let move = moves.get(cart.dir);
-            //console.log(cart.dir)
-            //console.log(move)
             cart.x += move.x;
             cart.y += move.y;
             for (const otherCart of carts) {
                 if (cart === otherCart) continue;
                 if (cart.x === otherCart.x && cart.y === otherCart.y) {
-                    return cart.x + "," + cart.y;
+                    cartsToRemove.push(cart);
+                    cartsToRemove.push(otherCart);
                 }
             }
             const ground = tracks[cart.y][cart.x];
@@ -90,20 +98,29 @@ const task1 = ([carts, tracks]) => {
                     console.warn("Outer switch error.");
             }
         }
+        carts = carts.filter(c => !cartsToRemove.includes(c));
+        let newCarts = [ ...carts];
+        carts.sort((c1,c2) => {
+            if (c1.y === c2.y) return c1.x - c2.x;
+            return c1.y - c2.y;
+        });
+        if (!compareArrays(newCarts, carts)) {
+            console.log("different")
+            console.table(newCarts);
+            console.table(carts);
+        }  else console.log("same");
+        if (carts.length === 1) return carts[0].x + "," + carts[0].y + "," + carts[0].dir;
     }
 };
 
-const task2 = data => {
-
-}
-
 let testdata = `
-/->-\\        
-|   |  /----\\
-| /-+--+-\\  |
-| | |  | v  |
-\\-+-/  \\-+--/
-  \\------/   `;
+/>-<\\  
+|   |  
+| /<+-\\
+| | | v
+\\>+</ |
+  |   ^
+  \\<->/`;
 
 inputdata = prepare(splitLines(inputdata));
 
@@ -111,12 +128,8 @@ testdata = prepare(splitLines(testdata));
 
 console.log("");
 
-doEqualTest(task1(testdata), "7,3");
+//doEqualTest(task(testdata), "6,4");
 
-console.log("Task 1: " + task1(inputdata));
+console.log("Task: " + task(inputdata));
 
 console.log("");
-
-//doEqualTest(task2(testdata), 336);
-
-//console.log("Task 2: " + task2(inputdata));
