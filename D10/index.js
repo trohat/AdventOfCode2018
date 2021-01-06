@@ -44,8 +44,10 @@ const task1 = stars => {
             if (star.posX === minX || star.posX === maxX) aligned++;
             if (star.posY === minY || star.posY === maxY) aligned++;
         }
-        if (aligned >= 100) return true;
-        return false;
+        let returnVal = false;
+        if (aligned > lastAligned) returnVal = true;
+        lastAligned = aligned;
+        return returnVal;
     };
 
     const makeStep = stars => {
@@ -73,13 +75,14 @@ const task1 = stars => {
 
     let nicePictures = 0;
     let step = 0;
+    let lastAligned = 10e10;
     let minX, maxX, maxY, minY;
 
-    while (nicePictures < 1) {
-        let borders = countPos(stars);
-        if (isNice(stars) && step > 5) {
+    while (step < 10600) {
+        countPos(stars);
+        if (isNice(stars) && step > 3) {
+            console.log("Drawing... - step", step, "lastAligned:", lastAligned, "xDiff:", maxX- minX, "yDiff", maxY - minY );
             console.log("");
-            console.log("Drawing... - step", step);
             nicePictures++;
             draw(stars);
         }
