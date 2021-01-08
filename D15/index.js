@@ -66,9 +66,7 @@ const draw = (maze, parUnits) => {
     }
 }
 
-const enemies = new Map([["elf", "golbin"], ["goblin", "elf"]]);
-
-const task1 = ([map, units]) => {
+const task1 = (map, units, elvesAttack) => {
     let rounds = 0;
     while (true) {
         for (let i = 0; i < map.length; i++) {   // going throug maze, y-style
@@ -85,7 +83,7 @@ const task1 = ([map, units]) => {
                                 for (const friend of units) {
                                     totalHP += friend.hp;
                                 }
-                                return [rounds, totalHP];
+                                return rounds * totalHP;
                             }
                             unit.moved = true;
                             // looking where to move
@@ -175,10 +173,11 @@ const task1 = ([map, units]) => {
                             targets.sort((t1, t2) => t1.hp - t2.hp);
                             target = targets.shift();
                             if (target) {
-                                target.hp -= 3;
+                                if (target.type === "elf") target.hp -= 3;
+                                else target.hp -= elvesAttack;
 
                                 if (target.hp <= 0) {
-                                    console.log("Someone died");
+                                    if (target.type === "elf") return "elf died";
                                     units = units.filter(u => u != target);
                                     map[target.y][target.x].isEmpty = true;
                                     map[target.y][target.x].unit = null;
@@ -191,18 +190,26 @@ const task1 = ([map, units]) => {
         }
         rounds++;
         for (const unit of units) unit.moved = false;
-        console.log("");
-        console.log("Round " + rounds);
-        draw(map, units);
+        //draw(map, units);
     }
-    return 7;
 };
 
-const task2 = data => {
-
+const task2 = ([ map, units ]) => {
+    let backupMap = JSON.stringify(map);
+    let backupUnits = JSON.stringify(units);
+    let elvesAttack = 3;
+    while (true) {
+        elvesAttack++;
+        let result = task1(JSON.parse(backupMap), JSON.parse(backupUnits), elvesAttack);
+        if (result !== "elf died") {
+            console.log("Final attack: " + elvesAttack);
+            console.log("Result: " + result);
+            return result;
+        };
+    }
 }
 
-let testdata = `#######
+let testdata1 = `#######
 #.G...#
 #...EG#
 #.#.#G#
@@ -210,20 +217,62 @@ let testdata = `#######
 #.....#
 #######`;
 
+let testdata2 = `#######
+#E..EG#
+#.#G.E#
+#E.##E#
+#G..#.#
+#..E#.#
+#######`;
+
+let testdata3 = `#######
+#E.G#.#
+#.#G..#
+#G.#.G#
+#G..#.#
+#...E.#
+#######`;
+
+let testdata4 = `#######
+#.E...#
+#.#..G#
+#.###.#
+#E#G#G#
+#...#G#
+#######`;
+
+let testdata5 = `#########
+#G......#
+#.E.#...#
+#..##..G#
+#...##..#
+#...#...#
+#.G...G.#
+#.....G.#
+#########`;
+
 inputdata = prepare(splitLines(inputdata));
 
 //console.log(inputdata);
 
-testdata = prepare(splitLines(testdata));
+testdata1 = prepare(splitLines(testdata1));
+testdata2 = prepare(splitLines(testdata2));
+testdata3 = prepare(splitLines(testdata3));
+testdata4 = prepare(splitLines(testdata4));
+testdata5 = prepare(splitLines(testdata5));
 
 console.log("");
 
 //doEqualTest(task1(testdata), 47);
 
-console.log("Task 1: " + task1(inputdata));
+//console.log("Task 1: " + task1(inputdata));
 
 console.log("");
 
-//doEqualTest(task2(testdata), 336);
+doEqualTest(task2(testdata1), 4988);
+doEqualTest(task2(testdata2), 31284);
+doEqualTest(task2(testdata3), 3478);
+doEqualTest(task2(testdata4), 6474);
+doEqualTest(task2(testdata5), 1140);
 
-//console.log("Task 2: " + task2(inputdata));
+console.log("Task 2: " + task2(inputdata));
