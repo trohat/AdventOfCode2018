@@ -99,9 +99,7 @@ const task1 = ([data, secondPart]) => {
     let instrObj = {};
     while (instrMap.size > 0) {
         for (const [key, value] of instrMap) {
-            if (value.length === 1) {
-                instrObj[key] = value[0];
-            }
+            if (value.length === 1) instrObj[key] = value[0];
         }
         let newInstrMap = new Map;
         for (let [key, value] of instrMap) {
