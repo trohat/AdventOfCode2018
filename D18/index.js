@@ -20,47 +20,78 @@ Array.prototype.countChar = function(char) {
     return this.reduce((accumulator, str) => accumulator + str.split(char).length-1, 0);
 } 
 
-const task1 = (grid) => {
-    const countNeighbours = ( x,y, grid ) => {
+const task = (area, totalMinutes) => {
+    const countNeighbours = ( x,y, area ) => {
         let trees = 0;
         let lumberyards = 0;
         if ( y > 0) {
-            lumberyards += (grid[y-1].charAt(x-1) === "#");
-            trees += (grid[y-1].charAt(x-1) === "|");
-            lumberyards += (grid[y-1].charAt(x) === "#");
-            trees += (grid[y-1].charAt(x) === "|");
-            lumberyards += (grid[y-1].charAt(x+1) === "#");
-            trees += (grid[y-1].charAt(x+1) === "|");
+            lumberyards += (area[y-1].charAt(x-1) === "#");
+            trees += (area[y-1].charAt(x-1) === "|");
+            lumberyards += (area[y-1].charAt(x) === "#");
+            trees += (area[y-1].charAt(x) === "|");
+            lumberyards += (area[y-1].charAt(x+1) === "#");
+            trees += (area[y-1].charAt(x+1) === "|");
         } 
-        lumberyards += (grid[y].charAt(x-1) === "#");
-        trees += (grid[y].charAt(x-1) === "|");
-        lumberyards += (grid[y].charAt(x+1) === "#");
-        trees += (grid[y].charAt(x+1) === "|");
-        if ( y < grid.length - 1) {
-            lumberyards += (grid[y+1].charAt(x-1) === "#");
-            trees += (grid[y+1].charAt(x-1) === "|");
-            lumberyards += (grid[y+1].charAt(x) === "#");
-            trees += (grid[y+1].charAt(x) === "|");
-            lumberyards += (grid[y+1].charAt(x+1) === "#");
-            trees += (grid[y+1].charAt(x+1) === "|");
+        lumberyards += (area[y].charAt(x-1) === "#");
+        trees += (area[y].charAt(x-1) === "|");
+        lumberyards += (area[y].charAt(x+1) === "#");
+        trees += (area[y].charAt(x+1) === "|");
+        if ( y < area.length - 1) {
+            lumberyards += (area[y+1].charAt(x-1) === "#");
+            trees += (area[y+1].charAt(x-1) === "|");
+            lumberyards += (area[y+1].charAt(x) === "#");
+            trees += (area[y+1].charAt(x) === "|");
+            lumberyards += (area[y+1].charAt(x+1) === "#");
+            trees += (area[y+1].charAt(x+1) === "|");
         } 
         return [ trees, lumberyards ];
     }
-
-    for (let minutes = 0; minutes < 10; minutes++) {
-        let lastGrid = [...grid];
-        grid = grid.map( (line, index) => {
+    let scores = new Set;
+    let repeats = 0;
+    let sequence = false;
+    let firstInSequence, firstMinute;
+    for (let minutes = 0; minutes < totalMinutes; minutes++) {
+        let lastArea = [...area];
+        area = area.map( (line, index) => {
             for (let i = 0; i < line.length; i++) {
                 let acre = line.charAt(i);
-                const [ trees, lumberyards ] = countNeighbours(i, index, lastGrid);
+                const [ trees, lumberyards ] = countNeighbours(i, index, lastArea);
                 if (acre === "." && trees >= 3) line = line.setCharAt(i, "|");
                 if (acre === "|" && lumberyards >= 3) line = line.setCharAt(i, "#");
                 if (acre === "#" && (lumberyards < 1 || trees < 1)) line = line.setCharAt(i, ".");
             }
             return line;
         });
+        let score = area.countChar('|') * area.countChar('#');
+        console.log("Minutes: " + minutes + " - resources: " + score);
+
+        if (!sequence) {
+            if (!scores.has(score)) {
+                scores.add(score);
+                repeats = 0;
+            }
+            else { 
+                console.log("Found repeat!");
+                repeats++;
+                if (repeats > 50) {
+                    sequence = new Map;
+                    firstMinute = minutes;
+                    sequence.set(0, score);
+                    firstInSequence = score;
+                }
+            }
+        }
+        else {
+            if (firstInSequence === score) {
+                console.log(sequence);
+                return sequence.get((totalMinutes - minutes - 1) % sequence.size);
+            }
+            else sequence.set(minutes - firstMinute, score);
+            
+        }
     }
-    return grid.countChar('|') * grid.countChar('#');
+
+    return area.countChar('|') * area.countChar('#');
 };
 
 let testdata = `.#.#...|#.
@@ -78,12 +109,8 @@ testdata = splitLines(testdata);
 
 console.log("");
 
-doEqualTest(task1(testdata), 1147);
+doEqualTest(task(testdata, 100), 1147);
 
-console.log("Task 1: " + task1(inputdata));
+console.log("Task 2: " + task(inputdata, 1000000000));
 
 console.log("");
-
-//doEqualTest(task2(testdata), 26);
-
-//console.log("Task 2: " + task2(inputdata));
