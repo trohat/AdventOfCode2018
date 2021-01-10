@@ -4,6 +4,10 @@ String.prototype.setCharAt = function (index, char) {
     return this.substring(0, index) + char + this.substring(index + 1);
 }
 
+Array.prototype.countChar = function(char) {
+    return this.reduce((accumulator, str) => accumulator + str.split(char).length-1, 0);
+} 
+
 const splitLines = (data) => data.split(String.fromCharCode(10));
 
 const prepare = data => {
@@ -42,7 +46,7 @@ const prepare = data => {
     for (let i = 0; i <= maxY; i++) {
         grid.push([]);
         let str = "";
-        for (let j = minX; j <= maxX; j++) {
+        for (let j = minX; j <= maxX + 1; j++) {
             grid[i].push({ isWall: false, isWater: false, cameFrom: null, beenDown: false, beenLeft: false, beenRight: false, twoWays: false, firstReturned: false });
             str += ".";
         }
@@ -64,12 +68,19 @@ const prepare = data => {
     grid[1][500 - minX].isWater = true;
     strGrid[1] = strGrid[1].setCharAt(500 - minX, "|");
 
-    console.log(strGrid);
 
     return [grid, strGrid, startArr];
 };
 
 const task1 = ([grid, strGrid, toInspectArr]) => {
+    const isWater = (y, x) => {
+        return grid[y][x].isWater;
+    };
+
+    const isWall = (y, x) => {
+        return grid[y][x].isWall;
+    };
+
     const isFree = (y, x) => {
         return !(grid[y][x].isWall || grid[y][x].isWater);
     };
@@ -93,7 +104,33 @@ const task1 = ([grid, strGrid, toInspectArr]) => {
         else console.warn("goBack working unexpectedly");
     };
 
-    //grid[6][6].isWall = false; //TO DELETE
+    const canFlowRight = (y, x) => {
+        let steps = 0;
+        while(true) {
+            x++;
+            if (isFree(y,x) && isFree(y+1,x) && isFree(y+2,x) && isFree(y+3,x) && isFree(y+4,x) && isFree(y+5,x) && isFree(y+6,x) && isFree(y+7,x)) return true;
+            if (isWall(y,x)) return false;
+            steps++;
+            if (steps > 200) {
+                console.warn("canFlowRight overflow");
+                return;
+            }
+        }
+    };
+
+    const canFlowLeft = (y, x) => {
+        let steps = 0;
+        while(true) {
+            x--;
+            if (isFree(y,x) && isFree(y+1,x) && isFree(y+2,x) && isFree(y+3,x) && isFree(y+4,x) && isFree(y+5,x) && isFree(y+6,x) && isFree(y+7,x)) return true;
+            if (isWall(y,x)) return false;
+            steps++;
+            if (steps > 200) {
+                console.warn("canFlowLeft overflow");
+                return;
+            }
+        }
+    };
 
     while (toInspectArr.length > 0) {
         let toInspect = toInspectArr.shift();
@@ -102,7 +139,10 @@ const task1 = ([grid, strGrid, toInspectArr]) => {
         let state = toInspect.state;
 
         // reached the end of sand
-        if (y === grid.length - 1) continue;
+        if (y === grid.length - 1) {
+            console.log("end reached", toInspectArr.length)
+            continue;
+        };
 
         // can go down
         grid[y][x].beenDown = true;
@@ -114,8 +154,9 @@ const task1 = ([grid, strGrid, toInspectArr]) => {
             continue;
         }
 
-        // fell on water
-        //if (state === "freefall" && grid[y+1][x].isWater) continue;
+        if (isWater(y+1, x)) {
+            if (canFlowRight(y+1,x) || canFlowLeft(y+1,x)) continue;
+        }
 
         // felt on clay 
         grid[y][x].beenRight = true;
@@ -165,31 +206,86 @@ const task1 = ([grid, strGrid, toInspectArr]) => {
 
     }
     console.log(strGrid);
-    console.log(grid);
+    return strGrid.countChar("|") + strGrid.countChar("~") - 2;
 };
 
-const task2 = data => {
+const task2 = ([grid, strGrid, toInspectArr]) => {
+    const isWater = (y, x) => {
+        return grid[y][x].isWater;
+    };
 
+    const isWall = (y, x) => {
+        return grid[y][x].isWall;
+    };
+
+    const isFree = (y, x) => {
+        try {
+            return !(grid[y][x].isWall || grid[y][x].isWater);
+        }
+        catch {
+            console.log(y, x, grid[y]);
+        }
+    };
+
+    const canFlowRight = (y, x) => {
+        let steps = 0;
+        while(true) {
+            x++;
+            if (x >= grid[0].length) return true;
+            if (isFree(y,x)) return true;
+            if (isWall(y,x)) return false;
+            steps++;
+            if (steps > 200) {
+                console.warn("canFlowRight overflow");
+                return;
+            }
+        }
+    };
+
+    const canFlowLeft = (y, x) => {
+        let steps = 0;
+        while(true) {
+            x--;
+            if (isFree(y,x)) return true;
+            if (isWall(y,x)) return false;
+            steps++;
+            if (steps > 200) {
+                console.warn("canFlowLeft overflow");
+                return;
+            }
+        }
+    };
+    
+    for (let i = 0; i < grid.length; i++) {
+        for (let j = 0; j < grid[0].length; j++) {
+            if (isWater(i,j)) {
+                if (canFlowLeft(i,j) || canFlowRight(i,j)) strGrid[i] = strGrid[i].setCharAt(j, "|");
+                else strGrid[i] = strGrid[i].setCharAt(j, "~");
+            }
+        }
+    }
+
+    return strGrid.countChar("~");
 }
 
-let testdata = `x=495, y=2..7
-y=7, x=495..501
-x=501, y=3..7
-x=498, y=2..4
-x=506, y=1..2
-x=498, y=10..13
-x=504, y=10..13
-y=13, x=498..504`;
+let testdata = `y=39, x=489..506
+x=489, y=29..39
+x=506, y=30..39
+x=498, y=33..35
+x=500, y=33..35
+y=35, x=498..500
+y=21, x=499..515
+x=499, y=10..21
+x=515, y=9..21`;
 
 inputdata = prepare(splitLines(inputdata));
 
 //console.log(inputdata);
 
-testdata = prepare(splitLines(testdata));
+//testdata = prepare(splitLines(testdata));
 
 //console.log(testdata)
 
-console.log("");
 
 //doEqualTest(task1(testdata), undefined);
 
@@ -197,6 +293,4 @@ console.log("Task 1: " + task1(inputdata));
 
 console.log("");
 
-//doEqualTest(task2(testdata), 336);
-
-//console.log("Task 2: " + task2(inputdata));
+console.log("Task 2: " + task2(inputdata));
