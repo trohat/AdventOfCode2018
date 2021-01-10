@@ -8,6 +8,7 @@ addr 4 2 2      // 5: jump r4 (goto r4 + 6)
 addi 2 1 2      // 6: goto 8
 addr 1 0 0      // 7: r0 += r1
 addi 3 1 3      // 8: r3++  
+mulr 3 1 4
 gtrr 3 5 4      // 9: r3 > r5 ? r4 = 1 : r4 = 0
 addr 2 4 2      // 10: jump r4
 seti 2 5 2      // 11: goto 3  

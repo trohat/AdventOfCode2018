@@ -5,7 +5,7 @@ const splitLines = data => data.split(String.fromCharCode(10));
 const prepare = data => {
     let program = [];
     const ipRe = /#ip (\d+)/;
-    const instrRe = /(\w{4}) (\d+) (\d+) (\d+)/;
+    const instrRe = /(\w{4}) (-?\d+) (\d+) (\d+)/;
     const [ , ip ] = ipRe.exec(data.shift());
     for (const line of data) {
         const [ , instr, first, second, third ] = instrRe.exec(line);
@@ -55,11 +55,8 @@ const task1 = ([ipRegister, program]) => {
         registers[instruction[3]] = res;
     }
 
-    console.log(ipRegister);
-    console.log(program);
-
     let registers = [0, 0, 0, 0, 0, 0];
-    let ip = 0;
+    let ip = 17;
     let steps = 0;
 
     while (ip < program.length) {
@@ -107,8 +104,6 @@ inputdata = prepare(splitLines(inputdata));
 testdata = prepare(splitLines(testdata));
 
 //doEqualTest(task(testdata), 6);
-
-console.log(inputdata);
 
 console.time("Task 1");
 console.log("Task1: " + task1(inputdata));
