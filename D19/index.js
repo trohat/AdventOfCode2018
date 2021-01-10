@@ -1,4 +1,4 @@
-console.log("funguju");
+console.log("AOC 2018 - Day 19: Go With The Flow");
 
 const splitLines = data => data.split(String.fromCharCode(10));
 
@@ -14,7 +14,7 @@ const prepare = data => {
     return [ +ip, program ];
 };
 
-const task = ([ipRegister, program]) => {
+const task1 = ([ipRegister, program]) => {
 
     const runInstruction = (registers, instruction) => {
         let opcode = instruction[0];
@@ -75,6 +75,24 @@ const task = ([ipRegister, program]) => {
     return registers[0];
 }
 
+const task2 = () => {
+    const r5 = 10551355;
+    //const r5 = 955;
+    let r0 = 0;
+    let r1, r3, r4;
+    r1 = 1;
+    while (r1 <= r5) {
+        r3 = 1;
+        while (r3 * r1 <= r5) {
+            r4 = r1 * r3;
+            if (r4 === r5) r0 += r1;
+            r3++;
+        }
+        r1++;
+    }
+    return r0;
+}
+
 let testdata = `#ip 0
 seti 5 0 1
 seti 6 0 2
@@ -92,6 +110,10 @@ testdata = prepare(splitLines(testdata));
 
 console.log(inputdata);
 
-console.time();
-console.log("Task: " + task(inputdata));
-console.timeEnd();
+console.time("Task 1");
+console.log("Task1: " + task1(inputdata));
+console.timeEnd("Task 1");
+
+console.time("Task 2");
+console.log("Task2: " + task2(inputdata));
+console.timeEnd("Task 2");
