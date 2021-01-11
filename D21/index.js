@@ -64,25 +64,49 @@ const task1 = ([ipRegister, program]) => {
 
         while (ip < program.length && steps < maxSteps) {
             registers[ipRegister] = ip;
-            //if (ip === 28) console.log(registers, steps);
             runInstruction(registers, program[ip]);
             ip = registers[ipRegister] + 1;
             steps++;
         }
-
         if (steps < maxSteps) console.log("Finished in " + steps + " steps. First register is " + firstRegister + ".");
     }
 
-    /* this takes 36 mins
-    for (let i = 0; i < 20000000; i++) {
-        runProgram(i, 2000);
-    }*/
-
-    runProgram(16457176, 3000);  // this is beteer
+    runProgram(16457176, 300000000);  
+    return 16457176;
 }
+
+const task2 = () => {
+    let results = new Set();
+    let lastR5 = 0;
+
+    let r5 = 0;
+    let r2, r3, r4;
+    r4 = r5 | 65536;
+    r5 = 3935295;
+    while (true) {
+        r2 = r4 & 255;
+        r5 += r2;
+        r5 &= 16777215;
+        r5 *= 65899; 
+        r5 &= 16777215; 
+        if (r4 < 256) {
+            if (results.has(r5)) return lastR5;
+            results.add(r5);
+            lastR5 = r5;
+            if (results.size % 1000 === 0) console.log(results.size);
+            r4 = r5 | 65536;
+            r5 = 3935295;
+        }
+        else r4 >>= 8;
+    }
+};
 
 inputdata = prepare(splitLines(inputdata));
 
 console.time("Task 1");
 console.log("Task1: " + task1(inputdata));
 console.timeEnd("Task 1");
+
+console.time("Task 2");
+console.log("Task2: " + task2());
+console.timeEnd("Task 2");

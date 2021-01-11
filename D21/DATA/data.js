@@ -16,8 +16,8 @@ gtir 256 4 2        // 13: r2 = 256 > r4 ? 1 : 0
 addr 2 1 1          // 14: jump r2
 addi 1 1 1          // 15: goto 17
 seti 27 1 1         // 16: goto 28
-seti 0 5 2          // 17: r2 = 5
-addi 2 1 3          // 18: r3 = r2 + 1 (r3 = 6)
+seti 0 5 2          // 17: r2 = 0
+addi 2 1 3          // 18: r3 = r2 + 1 (r3 = 1)
 muli 3 256 3        // 19: r3 *= 256 (shift??)
 gtrr 3 4 3          // 20: r3 = r3 > r4 ? 1 : 0
 addr 3 1 1          // 21: jump r3
