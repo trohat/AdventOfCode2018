@@ -1,4 +1,4 @@
-console.log("funguju");
+console.log("AOC 2018 - Day 16: Chronal Classification");
 
 const compareArrays = (arr1, arr2) => {
     let same = true;

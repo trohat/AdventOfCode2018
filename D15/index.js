@@ -1,4 +1,4 @@
-console.log("funguju");
+console.log("AOC 2018 - Day 15: Beverage Bandits");
 
 const dirs = [{ y: -1, x: 0 }, { y: 0, x: -1 }, { y: 0, x: 1 }, { y: 1, x: 0 }];
 

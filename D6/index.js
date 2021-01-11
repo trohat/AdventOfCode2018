@@ -1,4 +1,4 @@
-console.log("funguju");
+console.log("AOC 2018 - Day 6: Chronal Coordinates");
 
 let chr = String.fromCharCode;
 

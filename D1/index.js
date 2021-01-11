@@ -1,4 +1,4 @@
-console.log("funguju");
+console.log("AOC 2018 - Day 1: Chronal Calibration");
 
 const splitLines = (data) => data.split(String.fromCharCode(10));
 

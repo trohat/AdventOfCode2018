@@ -1,4 +1,4 @@
-console.log("funguju");
+console.log("AOC 2018 - Day 13: Mine Cart Madness");
 
 let chr = String.fromCharCode;
 

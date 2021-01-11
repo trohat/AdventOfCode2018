@@ -1,4 +1,4 @@
-console.log("funguju");
+console.log("AOC 2018 - Day 2: Inventory Management System");
 
 String.prototype.count = function (char) { 
     let result = 0;

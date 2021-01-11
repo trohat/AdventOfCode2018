@@ -1,4 +1,4 @@
-console.log("funguju");
+console.log("AOC 2018 - Day 4: Repose Record");
 
 String.prototype.setCharAt = function(index, char) {
     return this.substring(0,index) + char + this.substring(index+1);

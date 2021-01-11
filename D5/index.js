@@ -1,4 +1,4 @@
-console.log("funguju");
+console.log("AOC 2018 - Day 5: Alchemical Reduction");
 
 String.prototype.isLower = function() {
     return this.toLowerCase() == this;

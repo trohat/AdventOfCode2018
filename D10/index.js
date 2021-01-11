@@ -1,4 +1,4 @@
-console.log("funguju");
+console.log("AOC 2018 - Day 10: The Stars Align");
 
 Array.prototype.arrayFieldsToNumbers = function () {
     return this.map(f => +f);

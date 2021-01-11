@@ -1,4 +1,4 @@
-console.log("funguju");
+console.log("AOC 2018 - Day 14: Chocolate Charts");
 
 
 const task1 = improve => {

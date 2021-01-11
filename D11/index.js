@@ -1,4 +1,4 @@
-console.log("funguju");
+console.log("AOC 2018 - Day 11: Chronal Charge");
 
 const prepare = data => data;
 

@@ -1,4 +1,4 @@
-console.log("funguju");
+console.log("AOC 2018 - Day 9: Marble Mania");
 
 Array.prototype.max = function () {
     return Math.max(...this);

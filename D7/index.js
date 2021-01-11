@@ -1,4 +1,4 @@
-console.log("funguju");
+console.log("AOC 2018 - Day 7: The Sum of Its Parts");
 
 let ord = str => str.charCodeAt(0);
 

@@ -1,4 +1,4 @@
-console.log("funguju");
+console.log("AOC 2018 - Day 3: No Matter How You Slice It");
 
 String.prototype.setCharAt = function(index, char) {
     return this.substring(0,index) + char + this.substring(index+1);

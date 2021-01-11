@@ -1,4 +1,4 @@
-console.log("funguju");
+console.log("AOC 2018 - Day 8: Memory Maneuver");
 
 Array.prototype.sum = function () {
     return this.reduce((a,b) => a+b, 0);
