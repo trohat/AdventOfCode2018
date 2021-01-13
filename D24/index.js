@@ -103,14 +103,17 @@ const task1 = (system, debug) => {
         let type = unit.type === IMMUNE_SYSTEM ? "Immune System" : "Infection";
         log(type + " group " + unit.id + " attacks defending group " + enemy.id + ", killing " + killed + " units.");
         enemy.units -= killed;
+        return killed;
     };
 
-    end = false;
+    let end = false;
     let round = 0;
+    let reindeerWon = false;
     while (!end) {
         round++;
         log("");
-        log("Round " + round + ":")
+        log("Round " + round + ":");
+        let totalKilled = 0;
         
         system.sort(effectivePowerSortingFunction);
         
@@ -122,7 +125,7 @@ const task1 = (system, debug) => {
         system.sort(initiativeSortingFunction);
 
         for (const unit of system) {
-            if (unit.target) attack(unit, unit.target);
+            if (unit.target) totalKilled += attack(unit, unit.target);
         }
 
         system = system.filter( unit => unit.units > 0);
@@ -149,17 +152,47 @@ const task1 = (system, debug) => {
             log("Group " + unit.id + " contains " + unit.units + ".");
         }
         if (!infection) log("No groups remain.");
+
+        log("Total killed " + totalKilled);
+        if (totalKilled === 0) end = true;
+
         if (!(infection && immunity)) end = true;
+        if (!infection) reindeerWon = true;
 
     }
     let totalUnits = 0;
     for (const unit of system) totalUnits += unit.units;
 
-    return totalUnits;
+    return [ totalUnits, reindeerWon ];
 };
 
-const task2 = data => {
+const task2 = system => {
+    const backupSystem = JSON.stringify(system);
+    let boost = 0;
+    let boostChange = 1000;
 
+    let nextEnds = false;
+
+    while (true) {
+        let system = JSON.parse(backupSystem);
+        boost += boostChange;
+        //console.log("Working with " + boost + " boost.");
+        for (const unit of system) {
+            if (unit.type === IMMUNE_SYSTEM) {
+                unit.attack += boost;
+                unit.effectivePower = unit.units * unit.attack;
+            }
+        }
+
+        let result;
+        result = task1(system);
+        if (result[1]) {
+            boost -= boostChange;
+            boostChange = boostChange / 10;
+        }
+
+        if (result[1] && boostChange < 1) return result[0];
+    }
 }
 
 let testdata = `Immune System:
@@ -176,12 +209,14 @@ testdata = prepare(splitLines(testdata));
 
 console.log("");
 
-doEqualTest(task1(testdata, DEBUG), 5216);
+//doEqualTest(task1(testdata, DEBUG)[0], 5216);
 
-console.log("Task 1: " + task1(inputdata));
+//console.log("Task 1: " + task1(inputdata)[0]);
 
 console.log("");
 
-//doEqualTest(task2(testdata), 336);
+//doEqualTest(task2(testdata), 51);
 
-//console.log("Task 2: " + task2(inputdata));
+console.time("Task 2");
+console.log("Task 2: " + task2(inputdata));
+console.timeEnd("Task 2");
