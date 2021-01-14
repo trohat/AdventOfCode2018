@@ -87,7 +87,7 @@ const task1 = (system, debug) => {
                 enemyEffectivePower = enemyUnit.effectivePower;
                 enemyInitative = enemyUnit.initiative;
                 let type = unit.type === IMMUNE_SYSTEM ? "Immune System" : "Infection";
-                log(type + " group " + unit.id + " would deal defending group " + enemyUnit.id + " " + actualDamage + " damage.");
+                log(type + " group " + unit.id + " (e.p. " + unit.effectivePower + ", in. " + unit.initiative + ") would deal defending group " + enemyUnit.id + " " + actualDamage + " damage.");
             }
         });
         if (maxDamage === 0) return null;
@@ -96,12 +96,12 @@ const task1 = (system, debug) => {
     };
 
     const attack = (unit, enemy) => {
-        if (unit.units < 0) return;
+        if (unit.units < 0) return 0;
         unit.effectivePower = unit.units * unit.attack;
         let damage = unit.effectivePower * damageCoefficient(unit.attackType, enemy.traits);
         let killed = Math.floor(damage / enemy.hp);
         let type = unit.type === IMMUNE_SYSTEM ? "Immune System" : "Infection";
-        log(type + " group " + unit.id + " attacks defending group " + enemy.id + ", killing " + killed + " units.");
+        log(type + " group " + unit.id + " attacks defending group " + enemy.id + ", dealing " + damage + " damage, killing " + killed + " units.");
         enemy.units -= killed;
         return killed;
     };
@@ -136,7 +136,7 @@ const task1 = (system, debug) => {
         system.sort(logSortingFunction);
         log("Immune System:");
 
-        // reset effective power + which units were chosen and log the state
+        // resets effective power + which units were chosen and logs the state
         for (const unit of system) {
             unit.effectivePower = unit.units * unit.attack;
             unit.chosen = false;
@@ -151,7 +151,7 @@ const task1 = (system, debug) => {
             };
             log("Group " + unit.id + " contains " + unit.units + ".");
         }
-        if (!infection) log("No groups remain.");
+        if (!infection) log("Infection:\n" + "No groups remain.");
 
         log("Total killed " + totalKilled);
         if (totalKilled === 0) end = true;
@@ -176,7 +176,7 @@ const task2 = system => {
     while (true) {
         let system = JSON.parse(backupSystem);
         boost += boostChange;
-        //console.log("Working with " + boost + " boost.");
+        console.log("Working with " + boost + " boost.");
         for (const unit of system) {
             if (unit.type === IMMUNE_SYSTEM) {
                 unit.attack += boost;
@@ -214,9 +214,18 @@ console.log("");
 //console.log("Task 1: " + task1(inputdata)[0]);
 
 console.log("");
-
-//doEqualTest(task2(testdata), 51);
+/*
+doEqualTest(task2(testdata), 51);
 
 console.time("Task 2");
 console.log("Task 2: " + task2(inputdata));
 console.timeEnd("Task 2");
+*/
+for (const unit of testdata) {
+    if (unit.type === IMMUNE_SYSTEM) {
+        unit.attack += 1569;
+        unit.effectivePower = unit.units * unit.attack;
+    }
+}
+
+task1(testdata, DEBUG)
