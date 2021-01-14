@@ -1,5 +1,6 @@
 console.log("AOC 2018 - Day 9: Marble Mania");
 
+// from AOC 2020 - Day 9: Encoding Error
 Array.prototype.max = function () {
     return Math.max(...this);
 }

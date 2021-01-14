@@ -24,4 +24,10 @@ Codes from [Christmas coding event](https://adventofcode.com/2018).
 
 * ord, chr *(same as in Python and PHP)* - day 6
 
-* countManhattan *(counts Manhattan distance)* - day 6
+* countManhattan *(counts Manhattan distance)* - day 6 and much more in day 23
+
+* Array.from({length:players}).map(x => 0) *(creating array of zeroes)* - day 9
+
+* Array.prototype.intersection *(intersection of arrays)* - day 16
+
+* *different sorting functions* - day 24
