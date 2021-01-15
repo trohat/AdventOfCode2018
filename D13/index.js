@@ -4,14 +4,6 @@ let chr = String.fromCharCode;
 
 let ord = str => str.charCodeAt(0);
 
-const compareArrays = (arr1, arr2) => {
-    let same = true;
-    arr1.forEach((field, index) => {
-        if (field !== arr2[index]) same = false;
-    })
-    return same;
-}
-
 const turns = new Map([["left", "straight"], ["straight", "right"], ["right", "left"]]);
 
 const dirs = new Map([["<", "left"], [">", "right"], ["^", "up"], ["v", "down"]]);
@@ -99,17 +91,11 @@ const task = ([carts, tracks]) => {
             }
         }
         carts = carts.filter(c => !cartsToRemove.includes(c));
-        let newCarts = [ ...carts];
         carts.sort((c1,c2) => {
             if (c1.y === c2.y) return c1.x - c2.x;
             return c1.y - c2.y;
         });
-        if (!compareArrays(newCarts, carts)) {
-            console.log("different")
-            console.table(newCarts);
-            console.table(carts);
-        }  else console.log("same");
-        if (carts.length === 1) return carts[0].x + "," + carts[0].y + "," + carts[0].dir;
+        if (carts.length === 1) return carts[0].x + "," + carts[0].y; // + "," + carts[0].dir;
     }
 };
 
@@ -121,14 +107,16 @@ let testdata = `
 \\>+</ |
   |   ^
   \\<->/`;
-
+  
 inputdata = prepare(splitLines(inputdata));
-
+  
 testdata = prepare(splitLines(testdata));
 
 console.log("");
 
-//doEqualTest(task(testdata), "6,4");
+doEqualTest(task(testdata), "6,4");
+
+console.log("");
 
 console.log("Task: " + task(inputdata));
 

@@ -4,14 +4,6 @@ const splitLines = (data) => data.split(String.fromCharCode(10));
 
 inputdata = splitLines(inputdata);
 
-const compareArrays = (arr1, arr2) => {
-    let same = true;
-    arr1.forEach((field, index) => {
-        if (field !== arr2[index]) same = false;
-    })
-    return same;
-}
-
 String.prototype.setCharAt = function(index, char) {
     return this.substring(0,index) + char + this.substring(index+1);
 }
@@ -63,7 +55,6 @@ const task = (area, totalMinutes) => {
             return line;
         });
         let score = area.countChar('|') * area.countChar('#');
-        console.log("Minutes: " + minutes + " - resources: " + score);
 
         if (!sequence) {
             if (!scores.has(score)) {
@@ -71,7 +62,6 @@ const task = (area, totalMinutes) => {
                 repeats = 0;
             }
             else { 
-                console.log("Found repeat!");
                 repeats++;
                 if (repeats > 50) {
                     sequence = new Map;
@@ -83,11 +73,9 @@ const task = (area, totalMinutes) => {
         }
         else {
             if (firstInSequence === score) {
-                console.log(sequence);
                 return sequence.get((totalMinutes - minutes - 1) % sequence.size);
             }
             else sequence.set(minutes - firstMinute, score);
-            
         }
     }
 
@@ -109,8 +97,8 @@ testdata = splitLines(testdata);
 
 console.log("");
 
-doEqualTest(task(testdata, 100), 1147);
-
-console.log("Task 2: " + task(inputdata, 1000000000));
+doEqualTest(task(testdata, 10), 1147);
 
 console.log("");
+
+console.log("Task 2: " + task(inputdata, 1000000000));
